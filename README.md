@@ -10,7 +10,64 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage
 
-- [ ] Write usage instructions
+### GitHub Project Board → Markdown
+
+```ts
+import { fetchProjectBoard, toMarkdown } from "github-project-todo-md";
+const json = await fetchProjectBoard({
+    owner: "azu",
+    repo: "github-project-todo-md",
+    projectNumber: 1,
+    token: GITHUB_TOKEN
+});
+const markdown = toMarkdown(json);
+assert.strictEqual(
+    markdown,
+    `## To do
+
+- [ ] [TODO ISSUE](https://github.com/azu/github-project-todo-md/issues/4)
+
+
+## In progress
+
+- [ ] [PROGRESS ISSUE](https://github.com/azu/github-project-todo-md/issues/3)
+
+
+## Done
+
+- [ ] [DONE ISSUE](https://github.com/azu/github-project-todo-md/issues/5)
+`
+);
+
+```
+
+### Markdown → GitHub Project Board
+
+Sync Markdown's task status to GitHub Project Board's issue and pull request.
+
+```ts
+import { syncToProject } from "github-project-todo-md";
+const CODE = `## To do
+
+- [ ] [TODO ISSUE](https://github.com/azu/github-project-todo-md/issues/4)
+
+
+## In progress
+
+- [ ] [PROGRESS ISSUE](https://github.com/azu/github-project-todo-md/issues/3)
+
+
+## Done
+
+- [ ] [DONE ISSUE](https://github.com/azu/github-project-todo-md/issues/5)
+`;
+await syncToProject(CODE, {
+    owner: "azu",
+    repo: "github-project-todo-md",
+    projectNumber: 1,
+    token: TOKEN
+});
+```
 
 ## Changelog
 
