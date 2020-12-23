@@ -108,7 +108,6 @@ export const createSyncRequestObject = async (markdown: string, options: syncToP
             }
             const needToUpdateItem = todoItem.state !== item.state;
             if (needToUpdateItem) {
-                console.log(item);
                 needToUpdateItems.push({
                     __typename: item.__typename,
                     id: item.id,
