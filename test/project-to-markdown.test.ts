@@ -46,7 +46,7 @@ describe("project-to-markdown", function () {
                             id: "MDU6SXNzdWU3NzM3Mjc5MTA=",
                             title: "DONE ISSUE",
                             url: "https://github.com/azu/github-project-todo-md/issues/5",
-                            state: "OPEN"
+                            state: "CLOSED"
                         }
                     ]
                 }
@@ -66,7 +66,7 @@ describe("project-to-markdown", function () {
 
 ## Done
 
-- [ ] [DONE ISSUE](https://github.com/azu/github-project-todo-md/issues/5)
+- [x] [DONE ISSUE](https://github.com/azu/github-project-todo-md/issues/5)
 `
         );
     });

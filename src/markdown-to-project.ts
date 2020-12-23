@@ -81,9 +81,12 @@ export const syncIssues = async (queryParams: syncIssuesParam[], options: syncTo
         }
     });
 };
-// Markdown to Project
-// state is based on Markdown
-export const syncToProject = async (markdown: string, options: syncToProjectOptions) => {
+/**
+ * Create Request Object for syncing state
+ * @param markdown
+ * @param options
+ */
+export const createSyncRequestObject = async (markdown: string, options: syncToProjectOptions) => {
     const tree = md.parse(markdown);
     const listItems = selectAll("root > list > listItem[checked]", tree);
     const todoItems = listItems.map((item) => {
@@ -114,5 +117,11 @@ export const syncToProject = async (markdown: string, options: syncToProjectOpti
             }
         });
     });
-    return syncIssues(needToUpdateItems, options);
+    return needToUpdateItems;
+};
+// Markdown to Project
+// state is based on Markdown
+export const syncToProject = async (markdown: string, options: syncToProjectOptions) => {
+    const updateItems = await createSyncRequestObject(markdown, options);
+    return syncIssues(updateItems, options);
 };

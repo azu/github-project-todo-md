@@ -2,6 +2,26 @@
 
 A library that sync between GitHub Project Board &lt;-&gt; Markdown Todo text.
 
+## Example
+
+This library convert <https://github.com/azu/github-project-todo-md/projects/1> to following:
+
+```markdown
+## To do
+
+- [ ] [TODO ISSUE](https://github.com/azu/github-project-todo-md/issues/4)
+
+
+## In progress
+
+- [ ] [PROGRESS ISSUE](https://github.com/azu/github-project-todo-md/issues/3)
+
+
+## Done
+
+- [x] [DONE ISSUE](https://github.com/azu/github-project-todo-md/issues/5)
+```
+
 ## Install
 
 Install with [npm](https://www.npmjs.com/):
@@ -35,7 +55,7 @@ assert.strictEqual(
 
 ## Done
 
-- [ ] [DONE ISSUE](https://github.com/azu/github-project-todo-md/issues/5)
+- [x] [DONE ISSUE](https://github.com/azu/github-project-todo-md/issues/5)
 `
 );
 
