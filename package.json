@@ -1,0 +1,67 @@
+{
+  "name": "github-project-todo-md",
+  "version": "1.0.0",
+  "description": "A Tool that sync between GitHub Project Board <-> Todo Markdown text.",
+  "keywords": [
+    "markdown",
+    "github",
+    "project",
+    "todo",
+    "board",
+    "sync"
+  ],
+  "homepage": "https://github.com/azu/github-project-todo-md",
+  "bugs": {
+    "url": "https://github.com/azu/github-project-todo-md/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azu/github-project-todo-md.git"
+  },
+  "license": "MIT",
+  "author": "azu",
+  "sideEffects": false,
+  "main": "lib/github-project-todo-md.js",
+  "module": "module/github-project-todo-md.js",
+  "types": "lib/github-project-todo-md.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "module"
+  ],
+  "scripts": {
+    "build": "tsc -p . && tsc -p ./tsconfig.module.json",
+    "clean": "rimraf lib/ module/",
+    "prepare": "git config --local core.hooksPath .githook",
+    "prepublishOnly": "npm run clean && npm run build",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
+    "test": "mocha \"test/**/*.ts\"",
+    "watch": "tsc -p . --watch"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,css}": [
+      "prettier --write"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": false,
+    "tabWidth": 4,
+    "trailingComma": "none"
+  },
+  "devDependencies": {
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^14.14.14",
+    "lint-staged": "^10.5.3",
+    "mocha": "^8.2.1",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "ts-node-test-register": "^9.0.1",
+    "typescript": "^4.1.3"
+  }
+}
