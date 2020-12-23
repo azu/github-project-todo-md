@@ -1,6 +1,6 @@
 # github-project-todo-md
 
-A Tool that sync between GitHub Project Board &lt;-&gt; Todo Markdown text.
+A Tool that sync between GitHub Project Board <-> Todo Markdown text.
 
 ## Install
 
