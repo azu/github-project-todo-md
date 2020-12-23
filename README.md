@@ -89,6 +89,12 @@ await syncToProject(CODE, {
 });
 ```
 
+## Usecase
+
+> Inkdrop note <-> GitHub Project
+
+- https://github.com/azu/inkdrop-github-project-todo-md
+
 ## Changelog
 
 See [Releases page](https://github.com/azu/github-project-todo-md/releases).
