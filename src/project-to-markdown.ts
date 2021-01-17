@@ -102,7 +102,7 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
                         .join("\n")
                 );
             })
-            .join("\n\n")
+            .join("\n")
             .trim() + "\n"
     );
 };

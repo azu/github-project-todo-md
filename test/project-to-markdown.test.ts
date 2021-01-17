@@ -85,11 +85,9 @@ describe("project-to-markdown", function () {
 
 - [ ] [TODO ISSUE](https://github.com/azu/github-project-todo-md/issues/4)
 
-
 ## In progress
 
 - [ ] [PROGRESS ISSUE](https://github.com/azu/github-project-todo-md/issues/3)
-
 
 ## Done
 
