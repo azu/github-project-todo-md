@@ -57,10 +57,7 @@ export const normalizeProject = (project: Project): ProjectBoard => {
                         return "OPEN";
                     })();
                     return {
-                        __typename: content?.__typename,
-                        id: content?.id,
-                        title: content?.title,
-                        url: content?.url,
+                        ...content,
                         state: state
                     };
                 })
