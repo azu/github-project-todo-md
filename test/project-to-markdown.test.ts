@@ -22,6 +22,15 @@ describe("project-to-markdown", function () {
                             id: "MDU6SXNzdWU3NzM3MjczODE=",
                             title: "TODO ISSUE",
                             url: "https://github.com/azu/github-project-todo-md/issues/4",
+                            body: "FOR TESTING",
+                            labels: {
+                                nodes: [
+                                    {
+                                        name: "Type: Testing",
+                                        description: "Adding missing tests or correcting existing tests"
+                                    }
+                                ]
+                            },
                             state: "OPEN"
                         }
                     ]
@@ -34,6 +43,15 @@ describe("project-to-markdown", function () {
                             id: "MDU6SXNzdWU3NzM3MjY5OTA=",
                             title: "PROGRESS ISSUE",
                             url: "https://github.com/azu/github-project-todo-md/issues/3",
+                            body: "",
+                            labels: {
+                                nodes: [
+                                    {
+                                        name: "Type: Testing",
+                                        description: "Adding missing tests or correcting existing tests"
+                                    }
+                                ]
+                            },
                             state: "OPEN"
                         }
                     ]
@@ -46,6 +64,15 @@ describe("project-to-markdown", function () {
                             id: "MDU6SXNzdWU3NzM3Mjc5MTA=",
                             title: "DONE ISSUE",
                             url: "https://github.com/azu/github-project-todo-md/issues/5",
+                            body: "FOR TESTING",
+                            labels: {
+                                nodes: [
+                                    {
+                                        name: "Type: Testing",
+                                        description: "Adding missing tests or correcting existing tests"
+                                    }
+                                ]
+                            },
                             state: "CLOSED"
                         }
                     ]
