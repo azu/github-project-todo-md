@@ -71,10 +71,19 @@ export const normalizeProject = (project: Project): ProjectBoard => {
         columns
     };
 };
-export const toMarkdown = (projectBoard: ProjectBoard): string => {
+export type toMarkdownOptions = {
+    /**
+     * If you want to treat https://example.com/a as https://example.com/b
+     * itemMapping: (item) => { ...item, url: item.url.replace("/a", "/b") }
+     * @param url
+     */
+    itemMapping?: (item: ProjectBoardItem) => ProjectBoardItem;
+};
+export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptions): string => {
     const check = (item: ProjectBoardItem) => {
         return item.state === "OPEN" ? `[ ]` : "[x]";
     };
+    const itemMapping = options?.itemMapping ? options.itemMapping : (item: ProjectBoardItem) => item;
     return (
         projectBoard.columns
             .map((column) => {
@@ -85,7 +94,8 @@ export const toMarkdown = (projectBoard: ProjectBoard): string => {
                     "\n" +
                     column.items
                         .map((item) => {
-                            return `- ${check(item)} ${markdown.misc.link(item.title, item.url)}`;
+                            const mappedItem = itemMapping(item);
+                            return `- ${check(mappedItem)} ${markdown.misc.link(mappedItem.title, mappedItem.url)}`;
                         })
                         .join("\n")
                 );

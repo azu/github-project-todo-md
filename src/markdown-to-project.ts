@@ -14,11 +14,23 @@ type syncIssuesParam = {
     state: "OPEN" | "CLOSED";
 };
 
+export type SyncTaskItem = { url: string };
+
 export interface syncToProjectOptions {
     owner: string;
     repo: string;
     projectNumber: number;
     token: string;
+    /**
+     * - [x] [title](https://example/a)
+     *
+     * If you want to treat /a as /b
+     * https://example/a → https://example/b
+     *
+     * itemMapping: (item) => { ...item, url: item.url.replace("/a", "/b") }
+     * @param url
+     */
+    itemMapping?: (item: SyncTaskItem) => SyncTaskItem;
 }
 
 export const syncIssues = async (queryParams: syncIssuesParam[], options: syncToProjectOptions): Promise<void> => {
@@ -100,9 +112,13 @@ export const createSyncRequestObject = async (markdown: string, options: syncToP
     });
     const project = await fetchProjectBoard(options);
     const needToUpdateItems: syncIssuesParam[] = [];
+    const itemMapping = options.itemMapping ? options.itemMapping : (item: SyncTaskItem) => item;
     project.columns.forEach((column) => {
         column.items.forEach((item) => {
-            const todoItem = todoItems.find((todoItem) => todoItem.url === item.url);
+            const todoItem = todoItems.find((todoItem) => {
+                const item = { url: todoItem.url };
+                return itemMapping(item).url === item.url;
+            });
             if (!todoItem) {
                 return; // New Item?
             }
