@@ -17,6 +17,7 @@ export interface ProjectBoardItem {
     id: string; // GitHub Node id
     title: string;
     url: string;
+    body: string;
     state: "OPEN" | "CLOSED";
 }
 
@@ -107,6 +108,7 @@ export const fetchProjectBoard = async (options: fetchProjectBoardOptions): Prom
                     id
                     title
                     url
+                    body
                     IssueState: state
                   }
                   ... on PullRequest {
