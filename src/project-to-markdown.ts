@@ -18,6 +18,12 @@ export interface ProjectBoardItem {
     title: string;
     url: string;
     body: string;
+    labels: {
+        nodes: {
+            name: string;
+            description: string;
+        }[];
+    };
     state: "OPEN" | "CLOSED";
 }
 
@@ -109,12 +115,25 @@ export const fetchProjectBoard = async (options: fetchProjectBoardOptions): Prom
                     title
                     url
                     body
+                    labels(first: 10) {
+                      nodes {
+                        name
+                        description
+                      }
+                    }
                     IssueState: state
                   }
                   ... on PullRequest {
                     id
                     title
                     url
+                    body
+                    labels(first: 10) {
+                      nodes {
+                        name
+                        description
+                      }
+                    }
                     PullRequestState: state
                   }
                 }
