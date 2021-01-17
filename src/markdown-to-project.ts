@@ -114,19 +114,19 @@ export const createSyncRequestObject = async (markdown: string, options: syncToP
     const needToUpdateItems: syncIssuesParam[] = [];
     const itemMapping = options.itemMapping ? options.itemMapping : (item: SyncTaskItem) => item;
     project.columns.forEach((column) => {
-        column.items.forEach((item) => {
+        column.items.forEach((columnItem) => {
             const todoItem = todoItems.find((todoItem) => {
-                const item = { url: todoItem.url };
-                return itemMapping(item).url === item.url;
+                const mappedItem = { url: todoItem.url };
+                return itemMapping(mappedItem).url === columnItem.url;
             });
             if (!todoItem) {
                 return; // New Item?
             }
-            const needToUpdateItem = todoItem.state !== item.state;
+            const needToUpdateItem = todoItem.state !== columnItem.state;
             if (needToUpdateItem) {
                 needToUpdateItems.push({
-                    __typename: item.__typename,
-                    id: item.id,
+                    __typename: columnItem.__typename,
+                    id: columnItem.id,
                     state: todoItem.state
                 });
             }

@@ -2,6 +2,9 @@ import { createSyncRequestObject, syncToProject } from "../src/markdown-to-proje
 import assert from "assert";
 
 const TOKEN = process.env.GITHUB_TOKEN as string;
+if (!TOKEN) {
+    throw new Error("should set GITHUB_TOKEN before testing");
+}
 
 const CODE = `## To do
 
