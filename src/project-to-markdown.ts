@@ -2,8 +2,7 @@ import { graphql } from "@octokit/graphql";
 import type { IssueState, Project, Repository } from "@octokit/graphql-schema";
 import { PullRequestState } from "@octokit/graphql-schema/schema";
 import { debug } from "@deps/debug";
-// @ts-ignore
-import * as markdown from "markdown-builder";
+import { mdEscape, mdLink } from "markdown-function";
 
 export interface fetchProjectBoardOptions {
     owner: string;
@@ -89,15 +88,15 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
     return (
         projectBoard.columns
             .map((column) => {
-                const columnName: string = markdown.headers.hX(2, column.name);
-
                 return (
-                    columnName +
-                    "\n" +
+                    `## ${mdEscape(column.name)}\n\n` +
                     column.items
                         .map((item) => {
                             const mappedItem = itemMapping(item);
-                            return `- ${check(mappedItem)} ${markdown.misc.link(mappedItem.title, mappedItem.url)}`;
+                            return `- ${check(mappedItem)} ${mdLink({
+                                text: mappedItem.title,
+                                url: mappedItem.url
+                            })}\n`;
                         })
                         .join("\n")
                 );
