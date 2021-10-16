@@ -22,7 +22,7 @@ describe("project-to-markdown", function () {
                         {
                             __typename: "ProjectCard",
 
-                            body: "- Details Note A\n- [link](https://example.com)",
+                            body: "- [ ] Details Note A\n- [link](https://example.com)",
                             id: "PRC_lALOE04f3s4AmnKAzgQ6c4c",
                             labels: [],
                             state: "OPEN",
@@ -98,7 +98,7 @@ describe("project-to-markdown", function () {
             `## To do
 
 - [ ] [Note A](https://github.com/azu/github-project-todo-md/projects/1#card-70939527)
-    - Details Note A
+    - [ ] TODO Note A
     - [link](https://example.com)
 - [ ] [TODO ISSUE](https://github.com/azu/github-project-todo-md/issues/4)
 

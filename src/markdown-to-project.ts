@@ -2,24 +2,30 @@ import unified from "unified";
 import parse from "remark-parse";
 import gfm from "remark-gfm";
 import remarkStringify from "remark-stringify";
-import { select, selectAll } from "unist-util-select";
+import { selectAll } from "unist-util-select";
 import { debug } from "@deps/debug";
 import { graphql } from "@octokit/graphql";
 import { fetchProjectBoard, ProjectBoardItem } from "./project-to-markdown";
-import { dedent } from "ts-dedent";
-const md = unified()
-    .use(parse)
-    .use(remarkStringify, {
-        bullet: "-",
-        fences: true,
-        incrementListMarker: true
-    })
-    .use(gfm);
+import stripIndent from "strip-indent";
+const md = unified().use(parse).use(gfm).use(remarkStringify, {
+    bullet: "-",
+    fences: true,
+    incrementListMarker: true
+});
 
 type SyncIssuesParam =
     | {
+          // Status Change
           __typename: "Issue" | "PullRequest" | "ProjectCard";
           id: string; // GraphQL id!
+          state: "OPEN" | "CLOSED";
+      }
+    | {
+          // update note
+          __typename: "UpdateProjectCard";
+          id: string;
+          title: string;
+          body: string;
           state: "OPEN" | "CLOSED";
       }
     | {
@@ -67,11 +73,19 @@ export const syncIssues = async (queryParams: SyncIssuesParam[], options: SyncTo
   }){
     clientMutationId
   }`;
+        } else if (param.__typename === "UpdateProjectCard") {
+            return `updateProjectCard(input: {
+                projectCardId: "${param.id}"
+                note: ${JSON.stringify(param.title + (param.body ? "\n\n" + param.body : ""))},
+                isArchived: ${param.state !== "OPEN"}
+            }) {
+                clientMutationId
+            }`;
         } else if (param.__typename === "ProjectCard") {
             // archive note
             return `updateProjectCard(input: {
                 projectCardId: "${param.id}"
-                isArchived: true
+                isArchived: ${param.state !== "OPEN"}
             }) {
                 clientMutationId
             }`;
@@ -157,8 +171,9 @@ export const createSyncRequestObject = async (markdown: string, options: SyncToP
         const todoText = md.stringify(item);
         const lines = todoText.split(/\r?\n/);
         const title = lines[0].replace(/^-\s+\[.*?]\s*/, "");
-        const body = dedent(lines.slice(1).join("\n"));
-        const url = select("link", item)?.url;
+        const body = stripIndent(lines.slice(1).join("\n"));
+        // - [ ] [title](https://xxxx)
+        const url = (item as any).children[0]?.children[0]?.url;
         return {
             type: url ? "ISSUE_PR" : "Note",
             state: item.checked ? "CLOSED" : "OPEN",
@@ -191,8 +206,8 @@ export const createSyncRequestObject = async (markdown: string, options: SyncToP
     };
     for (const todoItem of todoItems) {
         const projectItem = findProjectTodoItem(todoItem);
+        // Should add new item as note
         if (!projectItem) {
-            // Should add new item as note
             if (options.includesNote && todoItem.type === "Note" && todoItem.state === "OPEN") {
                 needToUpdateItems.push({
                     __typename: "NewProjectCard",
@@ -201,7 +216,25 @@ export const createSyncRequestObject = async (markdown: string, options: SyncToP
                     body: todoItem.body
                 });
             }
-            continue; // New Item?
+            continue;
+        }
+        console.log({
+            todoItem,
+            project
+        });
+        // Update Note
+        if (options.includesNote && todoItem.type === "Note") {
+            const isChangedContent = todoItem.body.trim() !== projectItem.item.body.trim();
+            if (isChangedContent) {
+                needToUpdateItems.push({
+                    __typename: "UpdateProjectCard",
+                    id: projectItem.item.id,
+                    title: todoItem.title,
+                    body: todoItem.body,
+                    state: todoItem.state
+                });
+            }
+            continue;
         }
         const needToUpdateItem = todoItem.state !== projectItem.item.state;
         if (needToUpdateItem) {

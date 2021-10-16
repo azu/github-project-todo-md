@@ -53,7 +53,7 @@ describe("project-to-markdown", function () {
 ## In progress
 
 - [ ] [PROGRESS ISSUE](https://github.com/azu/github-project-todo-md/issues/3)
-
+fi
 
 ## Done
 
@@ -75,7 +75,7 @@ describe("project-to-markdown", function () {
     - asa
     asdsa
 - [ ] Note A
-    - Details Note A
+    - [ ] Details Note Axxxxx
     - [link](https://example.com)
 - [ ] [TODO ISSUE](https://github.com/azu/github-project-todo-md/issues/4)
 
