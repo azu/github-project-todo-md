@@ -33,7 +33,6 @@ export interface ProjectBoardItem {
 
 export interface ProjectBoardColumn {
     id: string;
-    databaseId: number;
     name: string;
     items: ProjectBoardItem[];
 }
@@ -51,7 +50,6 @@ export const normalizeProject = (project: Project, options: FetchProjectBoardOpt
         let columnNode = column?.node;
         return {
             id: columnNode?.id,
-            databaseId: columnNode?.databaseId,
             name: columnNode?.name,
             items:
                 columnNode?.cards?.nodes

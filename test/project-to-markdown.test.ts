@@ -17,7 +17,6 @@ describe("project-to-markdown", function () {
             columns: [
                 {
                     name: "To do",
-                    databaseId: 12195530,
                     id: "MDEzOlByb2plY3RDb2x1bW4xMjE5NTUzMA==",
                     items: [
                         {
@@ -50,7 +49,6 @@ describe("project-to-markdown", function () {
                 },
                 {
                     name: "In progress",
-                    databaseId: 12195531,
                     id: "MDEzOlByb2plY3RDb2x1bW4xMjE5NTUzMQ==",
                     items: [
                         {
@@ -73,7 +71,6 @@ describe("project-to-markdown", function () {
                 },
                 {
                     name: "Done",
-                    databaseId: 12195532,
                     id: "MDEzOlByb2plY3RDb2x1bW4xMjE5NTUzMg==",
                     items: [
                         {
