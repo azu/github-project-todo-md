@@ -21,13 +21,12 @@ describe("project-to-markdown", function () {
                     items: [
                         {
                             __typename: "ProjectCard",
-
-                            body: "- [ ] Details Note A\n- [link](https://example.com)",
-                            id: "PRC_lALOE04f3s4AmnKAzgQ6c4c",
+                            body: "- [ ] Details Note Axxxxx\n- [link](https://example.com)",
+                            id: "PRC_lALOE04f3s4AmnKAzgQ6kDs",
                             labels: [],
                             state: "OPEN",
                             title: "Note A",
-                            url: "https://github.com/azu/github-project-todo-md/projects/1#card-70939527"
+                            url: "https://github.com/azu/github-project-todo-md/projects/1#card-70946875"
                         },
                         {
                             __typename: "Issue",
@@ -97,8 +96,8 @@ describe("project-to-markdown", function () {
             markdown,
             `## To do
 
-- [ ] [Note A](https://github.com/azu/github-project-todo-md/projects/1#card-70939527)
-    - [ ] TODO Note A
+- [ ] [Note A](https://github.com/azu/github-project-todo-md/projects/1#card-70946875)
+    - [ ] Details Note Axxxxx
     - [link](https://example.com)
 - [ ] [TODO ISSUE](https://github.com/azu/github-project-todo-md/issues/4)
 

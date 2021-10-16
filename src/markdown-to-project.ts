@@ -7,10 +7,12 @@ import { debug } from "@deps/debug";
 import { graphql } from "@octokit/graphql";
 import { fetchProjectBoard, ProjectBoardItem } from "./project-to-markdown";
 import stripIndent from "strip-indent";
+
 const md = unified().use(parse).use(gfm).use(remarkStringify, {
     bullet: "-",
     fences: true,
-    incrementListMarker: true
+    incrementListMarker: true,
+    listItemIndent: "one"
 });
 
 type SyncIssuesParam =
