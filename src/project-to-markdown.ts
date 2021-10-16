@@ -118,7 +118,7 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
     return (
         projectBoard.columns
             .map((column) => {
-                return (
+                const columBody =
                     `## ${mdEscape(column.name)}\n\n` +
                     column.items
                         .map((item) => {
@@ -138,10 +138,10 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
                             return `- ${check(mappedItem)} ${mdLink({
                                 text: mappedItem.title,
                                 url: mappedItem.url
-                            })}\n`;
+                            })}`;
                         })
-                        .join("\n")
-                );
+                        .join("\n");
+                return columBody + "\n";
             })
             .join("\n")
             .trim() + "\n"
