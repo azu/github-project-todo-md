@@ -231,8 +231,8 @@ export const createSyncRequestObject = async (markdown: string, options: SyncToP
                     body: todoItem.body,
                     state: todoItem.state
                 });
+                continue;
             }
-            continue;
         }
         const needToUpdateItem = todoItem.state !== projectItem.item.state;
         if (needToUpdateItem) {
@@ -241,7 +241,6 @@ export const createSyncRequestObject = async (markdown: string, options: SyncToP
                 id: projectItem.item.id,
                 state: todoItem.state
             });
-            continue;
         }
     }
     return needToUpdateItems;
