@@ -76,7 +76,7 @@ export const syncIssues = async (queryParams: SyncIssuesParam[], options: SyncTo
     clientMutationId
   }`;
         } else if (param.__typename === "UpdateProjectCard") {
-            return `updateProjectCard(input: {
+            return `updateProjectCard${index}: updateProjectCard(input: {
                 projectCardId: "${param.id}"
                 note: ${JSON.stringify(param.title + (param.body ? "\n\n" + param.body : ""))},
                 isArchived: ${param.state !== "OPEN"}
@@ -85,7 +85,7 @@ export const syncIssues = async (queryParams: SyncIssuesParam[], options: SyncTo
             }`;
         } else if (param.__typename === "ProjectCard") {
             // archive note
-            return `updateProjectCard(input: {
+            return `updateProjectCard${index}: updateProjectCard(input: {
                 projectCardId: "${param.id}"
                 isArchived: ${param.state !== "OPEN"}
             }) {
@@ -241,6 +241,7 @@ export const createSyncRequestObject = async (markdown: string, options: SyncToP
                 id: projectItem.item.id,
                 state: todoItem.state
             });
+            continue;
         }
     }
     return needToUpdateItems;
