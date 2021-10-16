@@ -117,7 +117,6 @@ export const syncIssues = async (queryParams: SyncIssuesParam[], options: SyncTo
     });
 
     const syncQuery = `mutation { ${queries.join("\n")} }`;
-    console.log(syncQuery);
     debug("sync query", syncQuery);
     return graphql<{
         [index: string]: any;
