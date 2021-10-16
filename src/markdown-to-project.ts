@@ -208,39 +208,46 @@ export const createSyncRequestObject = async (markdown: string, options: SyncToP
     };
     for (const todoItem of todoItems) {
         const projectItem = findProjectTodoItem(todoItem);
-        // Should add new item as note
-        if (!projectItem) {
-            if (options.includesNote && todoItem.type === "Note" && todoItem.state === "OPEN") {
-                needToUpdateItems.push({
-                    __typename: "NewProjectCard",
-                    columnId: project.columns[0].id, // FIXME: only insert first column…
-                    title: todoItem.title,
-                    body: todoItem.body
-                });
-            }
-            continue;
-        }
-        // Update Note
-        if (options.includesNote && todoItem.type === "Note") {
-            const isChangedContent = todoItem.body.trim() !== projectItem.item.body.trim();
-            if (isChangedContent) {
-                needToUpdateItems.push({
-                    __typename: "UpdateProjectCard",
-                    id: projectItem.item.id,
-                    title: todoItem.title,
-                    body: todoItem.body,
-                    state: todoItem.state
-                });
+        // Add new Note
+        {
+            if (!projectItem) {
+                if (options.includesNote && todoItem.type === "Note" && todoItem.state === "OPEN") {
+                    needToUpdateItems.push({
+                        __typename: "NewProjectCard",
+                        columnId: project.columns[0].id, // FIXME: only insert first column…
+                        title: todoItem.title,
+                        body: todoItem.body
+                    });
+                }
                 continue;
             }
         }
-        const needToUpdateItem = todoItem.state !== projectItem.item.state;
-        if (needToUpdateItem) {
-            needToUpdateItems.push({
-                __typename: projectItem.item.__typename,
-                id: projectItem.item.id,
-                state: todoItem.state
-            });
+        // Update Note
+        {
+            if (options.includesNote && todoItem.type === "Note") {
+                const isChangedContent = todoItem.body.trim() !== projectItem.item.body.trim();
+                if (isChangedContent) {
+                    needToUpdateItems.push({
+                        __typename: "UpdateProjectCard",
+                        id: projectItem.item.id,
+                        title: todoItem.title,
+                        body: todoItem.body,
+                        state: todoItem.state
+                    });
+                    continue;
+                }
+            }
+        }
+        // Update Status
+        {
+            const needToUpdateItem = todoItem.state !== projectItem.item.state;
+            if (needToUpdateItem) {
+                needToUpdateItems.push({
+                    __typename: projectItem.item.__typename,
+                    id: projectItem.item.id,
+                    state: todoItem.state
+                });
+            }
         }
     }
     return needToUpdateItems;
