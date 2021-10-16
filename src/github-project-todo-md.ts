@@ -1,14 +1,14 @@
 /**
  * Markdown to GitHub Project
  */
-export { syncToProject, syncToProjectOptions, createSyncRequestObject } from "./markdown-to-project";
+export { syncToProject, SyncToProjectOptions, createSyncRequestObject } from "./markdown-to-project";
 /**
  * GitHub Project to Markdown
  */
 export {
     toMarkdown,
     fetchProjectBoard,
-    fetchProjectBoardOptions,
+    FetchProjectBoardOptions,
     ProjectBoard,
     ProjectBoardColumn,
     ProjectBoardItem

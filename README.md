@@ -89,7 +89,33 @@ await syncToProject(CODE, {
 });
 ```
 
-## Usecase
+## Options
+
+- `includesNote: boolean`
+  - Default: `false`
+
+If you want to include notes card for syncing, set `includesNote` to `true`.
+
+```markdown
+- [ ] title
+  - body
+    text
+```
+
+→ 
+
+```
+title
+
+- body
+  text
+```
+
+**Current Limitation** append a node to first column
+
+- [Append card to correct column · Issue #11 · azu/github-project-todo-md](https://github.com/azu/github-project-todo-md/issues/11)
+
+## UseCase
 
 > Inkdrop note <-> GitHub Project
 

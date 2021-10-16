@@ -8,7 +8,8 @@ describe("project-to-markdown", function () {
             owner: "azu",
             repo: "github-project-todo-md",
             projectNumber: 1,
-            token: TOKEN
+            token: TOKEN,
+            includesNote: true
         });
         const markdown = toMarkdown(json);
         assert.deepStrictEqual(json, {
@@ -16,7 +17,19 @@ describe("project-to-markdown", function () {
             columns: [
                 {
                     name: "To do",
+                    databaseId: 12195530,
+                    id: "MDEzOlByb2plY3RDb2x1bW4xMjE5NTUzMA==",
                     items: [
+                        {
+                            __typename: "ProjectCard",
+
+                            body: "- Details Note A\n- [link](https://example.com)",
+                            id: "PRC_lALOE04f3s4AmnKAzgQ6c4c",
+                            labels: [],
+                            state: "OPEN",
+                            title: "Note A",
+                            url: "https://github.com/azu/github-project-todo-md/projects/1#card-70939527"
+                        },
                         {
                             __typename: "Issue",
                             id: "MDU6SXNzdWU3NzM3MjczODE=",
@@ -37,6 +50,8 @@ describe("project-to-markdown", function () {
                 },
                 {
                     name: "In progress",
+                    databaseId: 12195531,
+                    id: "MDEzOlByb2plY3RDb2x1bW4xMjE5NTUzMQ==",
                     items: [
                         {
                             __typename: "Issue",
@@ -58,6 +73,8 @@ describe("project-to-markdown", function () {
                 },
                 {
                     name: "Done",
+                    databaseId: 12195532,
+                    id: "MDEzOlByb2plY3RDb2x1bW4xMjE5NTUzMg==",
                     items: [
                         {
                             __typename: "Issue",
@@ -83,6 +100,9 @@ describe("project-to-markdown", function () {
             markdown,
             `## To do
 
+- [ ] [Note A](https://github.com/azu/github-project-todo-md/projects/1#card-70939527)
+    - Details Note A
+    - [link](https://example.com)
 - [ ] [TODO ISSUE](https://github.com/azu/github-project-todo-md/issues/4)
 
 ## In progress

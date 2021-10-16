@@ -4,15 +4,20 @@ import { PullRequestState } from "@octokit/graphql-schema/schema";
 import { debug } from "@deps/debug";
 import { mdEscape, mdLink } from "markdown-function";
 
-export interface fetchProjectBoardOptions {
+export interface FetchProjectBoardOptions {
     owner: string;
     repo: string;
     projectNumber: number;
     token: string;
+    /**
+     * Include note only card on syncing target
+     * Default: false
+     */
+    includesNote?: boolean;
 }
 
 export interface ProjectBoardItem {
-    __typename: "Issue" | "PullRequest";
+    __typename: "Issue" | "PullRequest" | "ProjectCard";
     id: string; // GitHub Node id
     title: string;
     url: string;
@@ -27,6 +32,8 @@ export interface ProjectBoardItem {
 }
 
 export interface ProjectBoardColumn {
+    id: string;
+    databaseId: number;
     name: string;
     items: ProjectBoardItem[];
 }
@@ -36,35 +43,60 @@ export interface ProjectBoard {
     columns: ProjectBoardColumn[];
 }
 
-export const normalizeProject = (project: Project): ProjectBoard => {
+// const isNoteCard = (card: ProjectCard | null) => {
+//     return Boolean(card?.note);
+// };
+export const normalizeProject = (project: Project, options: FetchProjectBoardOptions): ProjectBoard => {
     const columns = project.columns?.edges?.map((column) => {
         let columnNode = column?.node;
         return {
+            id: columnNode?.id,
+            databaseId: columnNode?.databaseId,
             name: columnNode?.name,
-            items: columnNode?.cards?.nodes
-                ?.filter((card) => {
-                    return card?.content && !card.isArchived;
-                })
-                .map((card) => {
-                    const content = card?.content;
-                    const state = (() => {
-                        const state: PullRequestState | IssueState =
-                            (content as any)?.IssueState || (content as any)?.PullRequestState;
-                        if (state === "CLOSED" || state === "MERGED") {
-                            return "CLOSED";
+            items:
+                columnNode?.cards?.nodes
+                    ?.map((card) => {
+                        // note
+                        if (card?.note && card.content === null) {
+                            const lines = card?.note.split(/\r?\n/) ?? [];
+                            const title = lines[0];
+                            const body = lines.slice(1).join("\n").trim();
+                            return {
+                                __typename: card?.__typename, // ProjectCard
+                                id: card?.id,
+                                title: title,
+                                url: card?.url,
+                                body: body,
+                                labels: [],
+                                state: card.isArchived ? "CLOSED" : "OPEN"
+                            };
                         }
-                        return "OPEN";
-                    })();
-                    return {
-                        __typename: content?.__typename,
-                        id: content?.id,
-                        title: content?.title,
-                        url: content?.url,
-                        body: content?.body,
-                        labels: content?.labels,
-                        state: state
-                    };
-                })
+                        // issue or pr
+                        const content = card?.content;
+                        const state = (() => {
+                            const state: PullRequestState | IssueState =
+                                (content as any)?.IssueState || (content as any)?.PullRequestState;
+                            if (state === "CLOSED" || state === "MERGED") {
+                                return "CLOSED";
+                            }
+                            return "OPEN";
+                        })();
+                        return {
+                            __typename: content?.__typename,
+                            id: content?.id,
+                            title: content?.title,
+                            url: content?.url,
+                            body: content?.body,
+                            labels: content?.labels,
+                            state: state
+                        };
+                    })
+                    .filter((card) => {
+                        if (options.includesNote) {
+                            return true;
+                        }
+                        return card.__typename !== "ProjectCard";
+                    }) ?? []
         };
     }) as ProjectBoardColumn[];
     return {
@@ -93,6 +125,18 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
                     column.items
                         .map((item) => {
                             const mappedItem = itemMapping(item);
+                            // note
+                            if (item.__typename === "ProjectCard") {
+                                const body = mappedItem.body
+                                    .split(/\r?\n/)
+                                    .map((line) => " ".repeat(4) + line)
+                                    .join("\n");
+                                return `- ${check(mappedItem)} ${mdLink({
+                                    text: mappedItem.title,
+                                    url: mappedItem.url
+                                })}\n${body}`;
+                            }
+                            // issue
                             return `- ${check(mappedItem)} ${mdLink({
                                 text: mappedItem.title,
                                 url: mappedItem.url
@@ -105,7 +149,7 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
             .trim() + "\n"
     );
 };
-export const fetchProjectBoard = async (options: fetchProjectBoardOptions): Promise<ProjectBoard> => {
+export const fetchProjectBoard = async (options: FetchProjectBoardOptions): Promise<ProjectBoard> => {
     const query = `query($owner: String!, $repo: String!, $projectNumber: Int!){
   repository(owner: $owner name: $repo) {
     project(number: $projectNumber) {
@@ -113,11 +157,15 @@ export const fetchProjectBoard = async (options: fetchProjectBoardOptions): Prom
       columns(first: 20) {
         edges {
           node {
+            id
+            
             name
-            cards {
+            cards(archivedStates: NOT_ARCHIVED) {
               nodes {
+                __typename
                 id
                 note
+                url
                 isArchived
                 content {
                   __typename
@@ -171,5 +219,5 @@ export const fetchProjectBoard = async (options: fetchProjectBoardOptions): Prom
     if (!res.repository.project) {
         throw new Error("Not found project");
     }
-    return normalizeProject(res.repository.project);
+    return normalizeProject(res.repository.project, options);
 };
