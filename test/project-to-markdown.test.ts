@@ -5,8 +5,8 @@ const TOKEN = process.env.GITHUB_TOKEN as string;
 describe("project-to-markdown", function () {
     it("should fetch project board as markdown", async () => {
         const json = await fetchProjectBoard({
-            owner: "users",
-            repo: "azu",
+            owner: "azu",
+            repo: "github-project-todo-md",
             projectNumber: 1,
             token: TOKEN,
             includesNote: true
