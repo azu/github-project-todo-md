@@ -220,10 +220,6 @@ export const createSyncRequestObject = async (markdown: string, options: SyncToP
             }
             continue;
         }
-        console.log({
-            todoItem,
-            project
-        });
         // Update Note
         if (options.includesNote && todoItem.type === "Note") {
             const isChangedContent = todoItem.body.trim() !== projectItem.item.body.trim();
