@@ -1,5 +1,5 @@
 import { graphql } from "@octokit/graphql";
-import type { IssueState, Project, Repository } from "@octokit/graphql-schema";
+import type { IssueState, Organization, Project, Repository, User } from "@octokit/graphql-schema";
 import { PullRequestState } from "@octokit/graphql-schema/schema";
 import { debug } from "@deps/debug";
 import { mdEscape, mdLink } from "markdown-function";
@@ -148,9 +148,23 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
     );
 };
 export const fetchProjectBoard = async (options: FetchProjectBoardOptions): Promise<ProjectBoard> => {
-    const query = `query($owner: String!, $repo: String!, $projectNumber: Int!){
-  repository(owner: $owner name: $repo) {
-    project(number: $projectNumber) {
+    const queryVariables = (() => {
+        if (options.owner === "users" || options.owner === "orgs") {
+            return "query($repo: String!, $projectNumber: Int!) ";
+        }
+        return "query($owner: String!, $repo: String!, $projectNumber: Int!) ";
+    })();
+    const targetQuery = (() => {
+        if (options.owner === "users") {
+            return "user(login: $repo) ";
+        } else if (options.owner === "orgs") {
+            return "organization(login: $repo) ";
+        }
+        return "repository(owner: $owner name: $repo) ";
+    })();
+    const query = `${queryVariables} {
+  ${targetQuery} {
+   project(number: $projectNumber) {
       name
       columns(first: 20) {
         edges {
@@ -205,17 +219,28 @@ export const fetchProjectBoard = async (options: FetchProjectBoardOptions): Prom
 `;
     debug("options", options);
     const res = await graphql<{
+        user: User;
+        organization: Organization;
         repository: Repository;
     }>(query, {
         headers: {
-            authorization: `token ${options.token}`
+            authorization: `token ${options.token}`,
+            "GraphQL-Features": "projects_next_graphql"
         },
         owner: options.owner,
         repo: options.repo,
         projectNumber: options.projectNumber
     });
-    if (!res.repository.project) {
+    const project = (() => {
+        if (options.owner === "users") {
+            return res.user.project;
+        } else if (options.owner === "orgs") {
+            return res.organization.project;
+        }
+        return res.repository.project;
+    })();
+    if (!project) {
         throw new Error("Not found project");
     }
-    return normalizeProject(res.repository.project, options);
+    return normalizeProject(project, options);
 };

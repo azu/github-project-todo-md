@@ -115,6 +115,39 @@ title
 
 - [Append card to correct column · Issue #11 · azu/github-project-todo-md](https://github.com/azu/github-project-todo-md/issues/11)
 
+## User's or Organization's project
+
+User or Organization level project is supported.
+
+You need to pass specific value to `owner` option.
+
+- User: `owner: "users"`
+- Organization: `owner: "orgs"`
+
+```ts
+import { syncToProject } from "github-project-todo-md";
+const CODE = `## To do
+
+- [ ] [TODO ISSUE](https://github.com/azu/github-project-todo-md/issues/4)
+
+
+## In progress
+
+- [ ] [PROGRESS ISSUE](https://github.com/azu/github-project-todo-md/issues/3)
+
+
+## Done
+
+- [ ] [DONE ISSUE](https://github.com/azu/github-project-todo-md/issues/5)
+`;
+await syncToProject(CODE, {
+    owner: "users",
+    repo: "azu", // user name
+    projectNumber: 1,
+    token: TOKEN
+});
+```
+
 ## UseCase
 
 > Inkdrop note <-> GitHub Project
