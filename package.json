@@ -1,6 +1,6 @@
 {
   "name": "github-project-todo-md",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "A Tool that sync between GitHub Project Board <-> Todo Markdown text.",
   "keywords": [
     "markdown",
