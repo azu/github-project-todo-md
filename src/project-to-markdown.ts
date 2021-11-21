@@ -118,7 +118,7 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
     return (
         projectBoard.columns
             .map((column) => {
-                const columBody =
+                const columnBody =
                     `## ${mdEscape(column.name)}\n\n` +
                     column.items
                         .map((item) => {
@@ -126,13 +126,15 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
                             // note
                             if (item.__typename === "ProjectCard") {
                                 const body = mappedItem.body
+                                    ? "\n" + mappedItem.body
                                     .split(/\r?\n/)
                                     .map((line) => " ".repeat(4) + line)
-                                    .join("\n");
+                                    .join("\n")
+                                    : "";
                                 return `- ${check(mappedItem)} ${mdLink({
                                     text: mappedItem.title,
                                     url: mappedItem.url
-                                })}\n${body}`;
+                                })}${body}`;
                             }
                             // issue
                             return `- ${check(mappedItem)} ${mdLink({
@@ -141,7 +143,7 @@ export const toMarkdown = (projectBoard: ProjectBoard, options?: toMarkdownOptio
                             })}`;
                         })
                         .join("\n");
-                return columBody + "\n";
+                return columnBody + "\n";
             })
             .join("\n")
             .trim() + "\n"
